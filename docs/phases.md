@@ -7,3 +7,6 @@
 - Lokale, fest versionierte Bibliotheken für Betrieb ohne CDN.
 
 Prüfung: App unter http://127.0.0.1:4174 gestartet; Browser zeigt zwei Leveldaten, LLM City verfügbar und Token Pass gesperrt. JavaScript-Syntaxprüfung bestanden.
+
+## Phase 2 – World Map
+3D-Karte mit Originalmodellen, zwei Level-Nodes, Route, Sperrzustand, responsivem Koordinatensystem und Navigation. Browserprüfung: Karte gerendert; Einstieg in LLM City und Rückweg verfügbar; Token Pass gesperrt.
