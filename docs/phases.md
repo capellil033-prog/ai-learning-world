@@ -10,3 +10,6 @@ Prüfung: App unter http://127.0.0.1:4174 gestartet; Browser zeigt zwei Leveldat
 
 ## Phase 2 – World Map
 3D-Karte mit Originalmodellen, zwei Level-Nodes, Route, Sperrzustand, responsivem Koordinatensystem und Navigation. Browserprüfung: Karte gerendert; Einstieg in LLM City und Rückweg verfügbar; Token Pass gesperrt.
+
+## Phase 3 – LLM City
+Sieben datengetriebene Stationen, Token-Generierung, Zusammenfassung, Wissenscheck, Tour und wiederverwendete Fahrphysik. Browserprüfung: 7 Stationen bestätigt, Demo vollständig ausgeführt, unbeantworteter Check blockiert Abschluss, 3 richtige Antworten schalten Token Pass frei. Keine Browserfehler.
