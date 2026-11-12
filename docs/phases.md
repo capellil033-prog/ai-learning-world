@@ -16,3 +16,6 @@ Sieben datengetriebene Stationen, Token-Generierung, Zusammenfassung, Wissensche
 
 ## Phase 4 – Token Pass
 Originale Bergwelt mit Snowcat, Tunnel, Tokenzerlegung, Kontextladung und Präfix-Cache. Browserprüfung: Berglevel gestartet, Überladung blockiert, relevante Ladung mit Ausgabereserve akzeptiert. Sechs automatisierte Tests für Datenmodell, Speicherung, Freischaltung, Tokenisierung und Kapazität bestanden.
+
+## Phase 5 – Tool River
+Flusslandschaft, Boot, Anleger, Brücke und Tool-Call-Simulation mit Argumentprüfung. Browserprüfung: Nach Token-Pass-Abschluss wird Tool River geöffnet; Werkzeugergebnis wird sichtbar in den Kontext aufgenommen. Keine Browserfehler. Sieben automatisierte Tests bestanden, einschliesslich ungültiger Werkzeugaufrufe.

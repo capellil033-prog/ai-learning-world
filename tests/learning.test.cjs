@@ -34,3 +34,8 @@ test('context capacity includes output reserve and required source',()=>{
   assert.equal(L.cargo(demo,['task','report']).valid,true);
   assert.equal(L.cargo(demo,['task']).valid,false);
 });
+test('tool execution rejects malformed JSON, unknown names and wrong argument types',()=>{
+ const d=levels.find(l=>l.id==='tool-river')?.stations.find(s=>s.demo?.type==='tool').demo;if(!d)return;
+ for(const raw of ['{broken','null',JSON.stringify({name:'delete',arguments:{city:'Berlin'}}),JSON.stringify({name:'weather',arguments:{city:12}}),JSON.stringify({name:'weather',arguments:{city:'__proto__'}})])assert.ok(L.toolCall(raw,d).error);
+ assert.equal(L.toolCall(JSON.stringify(d.call),d).result.temperature,18);
+});
