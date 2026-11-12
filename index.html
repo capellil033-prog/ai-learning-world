@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f9fbfb"><meta name="description" content="Eine interaktive 3D-Lernreise durch Sprachmodelle, Tokens, Tools und Agenten.">
+  <title>AI Learning World · KI verstehen</title>
+  <link rel="stylesheet" href="assets/token-transit.css"><link rel="stylesheet" href="styles.css">
+  <script defer src="assets/vendor/three.min.js"></script><script defer src="assets/vendor/cannon.min.js"></script><script defer src="assets/vendor/lucide.min.js"></script>
+  <script defer src="data/world.js"></script><script defer src="data/level-1-llm.js"></script><script defer src="data/level-2-tokens.js"></script>
+  <script defer src="lib/progress.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="#world"><span class="brand-icon"><i data-lucide="route"></i></span><span>AI<span class="brand-light"> Learning World</span><span class="brand-dot">.</span><small>EINE WELT. SCHRITT FÜR SCHRITT.</small></span></a><button class="map-return" id="world-button"><i data-lucide="map"></i> Weltkarte</button><span class="local-label"><span class="status-dot"></span> LOKALE LERNWELT</span></header>
+  <main id="world-view" class="atlas-layout"><aside class="atlas-sidebar"><span class="eyebrow"><span class="tiny-line"></span> DEINE LERNREISE</span><h1>KI verstehen.<br><span>Welt für Welt.</span></h1><p>Entdecke, wie moderne KI funktioniert. Folge der Route und probiere die Konzepte selbst aus.</p><div class="route-heading"><span>REISEROUTE</span><span id="level-count"></span></div><nav id="level-list" aria-label="Learning Levels"></nav><div class="atlas-note"><i data-lucide="lightbulb"></i><p>Jeder Halt erklärt ein Konzept. Dein Fortschritt bleibt in diesem Browser gespeichert.</p></div><p id="storage-note" role="status" hidden></p></aside><section class="atlas-world"><div class="atlas-heading"><span class="eyebrow">AI LEARNING WORLD / WELTKARTE</span><h2>Dein Weg durch die KI.</h2><p id="world-progress"></p></div><div id="world-map" class="map-viewport"><div class="foundation-map"><i data-lucide="map"></i><p>LLM City → Token Pass</p><span>Gemeinsame Grundlage und Level-Datenmodell bereit.</span></div></div><div id="level-preview" class="level-preview" aria-live="polite"></div></section></main>
+  <main id="level-view" hidden></main>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <noscript>Bitte aktiviere JavaScript, um die interaktive Lernwelt zu verwenden.</noscript>
+</body>
+</html>
