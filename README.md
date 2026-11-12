@@ -1,68 +1,82 @@
 # AI Learning World
 
-Interaktive, datengetriebene 3D-Lernwelt nach der Spezifikation in `C:\Obsidian\ChatGPT\Projekte\AI Learning World`.
+An interactive, data-driven 3D learning world for exploring how AI systems work.
 
-## Start
+Generated with **GPT 6.1 Sol — Extra High**.
 
-`index.html` in einem aktuellen Browser öffnen. Alternativ im Projektordner `python -m http.server 4173 --bind 127.0.0.1` starten und `http://127.0.0.1:4173` öffnen. Kein Build, npm, Backend oder Internetzugang nötig; Bibliotheken liegen lokal in `assets/vendor/`.
+The interface and learning content are in German.
 
-Für 3D wird WebGL benötigt. Ist 3D nicht verfügbar, bleiben die Stationen, Demos und Wissenschecks erreichbar.
+## Download and run
 
-## Fertiger Umfang
+1. [Download the project as a ZIP](https://github.com/capellil033-prog/ai-learning-world/archive/refs/heads/main.zip), or choose **Code → Download ZIP** on GitHub.
+2. Extract the entire ZIP into a folder.
+3. Open **index.html** in a modern browser.
 
-1. **LLM City:** sieben Stationen von User bis Verify, schrittweise Token-Generierung.
-2. **Token Pass:** übernommene Bergwelt mit Snowcat, Tokenzerlegung, begrenzter Kontextladung und Präfix-Cache.
-3. **Tool River:** Boot, geprüfter Tool Call und Rückgabe des Ergebnisses in den Kontext.
-4. **Agent Forest:** Jeep, beobachtungsabhängige Entscheidungen, Schrittlimit und menschlicher Abbruch.
-5. **MCP Harbor:** Hafenboot, Host/Client/Server, Tools, Resources und Prompts.
-6. **Retrieval Desert:** Geländewagen, Wort-/Vektorsuche, Quellenwahl, Grounding und RAG.
-7. **Verification Lab:** Shuttle, Belegprüfung, Tests, Evaluation, Validation und Human Review.
+Keep the files and folders together. No installation, build step, npm, backend, AI account, or internet connection is required after downloading. All libraries are included locally.
 
-Jeder Level enthält Einstieg, Stationen, mindestens eine interaktive Demo, Zusammenfassung und drei Checkpoint-Fragen. Nach bestätigten Stationen, ausgeführten Demos und bestandenem Checkpoint wird der nächste Level freigeschaltet. Zu Beginn ist nur LLM City verfügbar; Token Pass und die weiteren Gebiete sind sichtbar und gesperrt.
+If opening the file directly does not work, open a terminal in the extracted folder and run `python -m http.server 4173 --bind 127.0.0.1`. Then visit **http://127.0.0.1:4173**. This serves the project files locally and requires Python.
 
-## Bedienung
+The 3D view requires WebGL. Stations, demos, and knowledge checks remain accessible if 3D is unavailable.
 
-- Weltkarte: Region anklicken und **Level erkunden** wählen. Kleine Bildschirme können die Karte horizontal verschieben.
-- Stationen: anklicken, lesen, Demo ausprobieren und **Station verstanden** bestätigen.
-- **Tour:** zur ausgewählten Station fahren und dort automatisch halten. An Parkbuchten öffnet sich nach 0,65 Sekunden Stillstand die Erklärung.
-- **W / ↑:** Gas; **S / ↓:** bremsen und rückwärts; **A/D / ←/→:** lenken; **Leertaste:** anhalten; **P:** Tempomat. Manuelle Eingabe übernimmt die Kontrolle.
-- Touch: Pedal und Lenkknöpfe gedrückt halten. Kamera durch Ziehen drehen; Mausrad oder +/− zum Zoomen; Kartenknopf für die Übersicht.
-- **Wissenscheck:** Zusammenfassung und Quiz öffnen. **Weltkarte:** zum Atlas zurückkehren.
+## Learning levels
 
-Der Fahrzeug-Reset setzt die Fahrt zurück; der Lernfortschritt bleibt erhalten.
+1. **LLM City:** seven stations from User to Verify, including step-by-step token generation.
+2. **Token Pass:** a snowy mountain pass with a snowcat, text splitting, limited context cargo, and prefix caching.
+3. **Tool River:** a boat journey showing validated tool calls and results returning to the model context.
+4. **Agent Forest:** a jeep journey with observation-driven decisions, step limits, and human interruption.
+5. **MCP Harbor:** a harbor boat, host/client/server connections, tools, resources, and prompts.
+6. **Retrieval Desert:** an off-road vehicle, keyword/vector search, source selection, grounding, and RAG.
+7. **Verification Lab:** a shuttle, evidence checks, tests, evaluation, validation, and human review.
 
-## Speicherung und fachliche Grenzen
+Each level includes an introduction, learning stations, interactive demos, a summary, and three checkpoint questions. Initially, only LLM City is available. Complete its stations, demos, and knowledge check to unlock the next region.
 
-Fortschritt liegt unter `ai-learning-world-v1` im localStorage des Browsers. Datei-Aufruf und verschiedene Serveradressen besitzen getrennte Speicherbereiche. Ist Speicherung blockiert, läuft die App mit Sitzungsfortschritt weiter und zeigt einen Hinweis.
+## Controls and progress
 
-Alle Modell-, Token-, Wetter-, MCP-, Retrieval- und Evaluationsbeispiele laufen lokal. Es gibt keine echte KI-Anbindung und keine ausgehenden API-Aufrufe. Tokenzerlegung, Vektoren, Kapazitäten und externe Datensätze sind didaktische Beispiele. Die fachlichen Quellen stehen in `docs/sources.md`.
+- **World map:** select a region and click **Level erkunden**. On smaller screens, scroll the map horizontally.
+- **Stations:** open a station, read its explanation, try its demo, and click **Station verstanden**.
+- **Demos:** complete the interaction itself. **Verstanden ✓** confirms the station, but does not automatically complete its demo. In LLM City's **Modell-Fabrik**, click **Nächstes Token** seven times to finish the token-generation demo.
+- **Tour:** drive to the selected station and stop automatically. Parking in a marked bay for 0.65 seconds opens its explanation.
+- **W / ↑:** accelerate. **S / ↓:** brake and reverse. **A/D / ←/→:** steer. **Space:** stop. **P:** toggle cruise control. Manual input takes control.
+- **Touch:** hold the pedal and steering buttons. Drag to rotate the camera; use the mouse wheel or +/− to zoom. The map button toggles the overview.
+- **Wissenscheck:** open the summary and quiz. **Weltkarte:** return to the world map.
 
-## Struktur
+Resetting the vehicle resets the drive while keeping your learning progress.
 
-- `data/`: Welt- und Leveldaten, Lerntexte, Demonstrationen und Checkpoints.
-- `app.js`: gemeinsame Navigation und Lernablauf.
-- `lib/`: gemeinsame Fahr-/Szenenlogik und Fortschritt.
-- `assets/`: wiederverwendete Gestaltung und lokale Bibliotheken.
-- `docs/`: Herkunft und Nachweise der Entwicklungsphasen.
+Progress is stored in your browser's localStorage under `ai-learning-world-v1`. Different browsers, server addresses, and direct file access have separate storage. Use the same browser and address to continue your journey. If storage is blocked, progress lasts only for the current session and the app displays a notice.
 
-Die Token-Transit-Quelldateien wurden ausschliesslich gelesen. Ihre ursprünglichen SHA-256-Prüfsummen stehen in `docs/template-hashes.json`; alle vier Dateien sind unverändert. Gebäude und Grundfahrzeug stehen als gemeinsame Modelle in `lib/models.js`, die übernommene Berg-/Fahr-/Kameralogik in `lib/expedition.js`. Die Oberfläche entwickelt das Originaldesign aus `assets/token-transit.css` weiter. Fahrzeugvarianten und Biome ergänzen dieselben geometrischen Grundformen.
+## Educational simulations
 
-## Einen Level ergänzen
+All model, token, weather, MCP, retrieval, and evaluation examples run locally. There is no live AI integration or outgoing API traffic. Token splitting, vectors, capacities, and external datasets are simplified teaching examples. References are listed in [docs/sources.md](docs/sources.md).
 
-Eine Datei unter `data/` legt ein weiteres Objekt in `AIWorld.levels` ab; sie wird in `index.html` nach `data/world.js` eingebunden. `app.js` enthält keine Levelinhalte.
+## Project structure
 
-Das Objekt beschreibt `id`, `number`, `title`, `topic`, `environment`, `vehicle`, `unlockedAfter`, Kartenposition, Lernziele, `stations`, `summary` und `checkpoints`. Stationen enthalten Texte, drei Verarbeitungsschritte, Beispiel, fachliche Grenze und optional eine deklarative `demo`. Der gemeinsame Lernablauf liest diese Daten.
+- `data/`: world and level data, learning content, demos, and checkpoints.
+- `app.js`: shared navigation and learning flow.
+- `lib/`: shared models, driving, scene logic, demos, and progress handling.
+- `assets/`: visual styling and bundled libraries.
+- `docs/`: references, development notes, and screenshots.
 
-`completedLevels`, `currentLevel` und `unlockedLevels` folgen dem spezifizierten Fortschrittsmodell. Zusätzliche Listen halten besuchte Stationen, abgeschlossene Demos und bestandene Checkpoint-Fragen für die Wiederaufnahme fest.
+The project builds on the author's Token Transit project. Its buildings and base vehicle are reused in `lib/models.js`; mountain scenery, driving, and camera logic are adapted in `lib/expedition.js`. The interface extends the original styling in `assets/token-transit.css`. Vehicle variants and biomes use the same geometric foundations.
 
-## Prüfungen
+The original Token Transit files were left unchanged. Their SHA-256 hashes are recorded in `docs/template-hashes.json`. Bundled third-party license notices are included in `assets/vendor/` and must be retained.
 
-Mit Node.js 18 oder neuer: `node --test`.
+## Adding a level
 
-17 Tests prüfen Datenmodell, Freischaltungen, Speicherung, Demonstrationen und die tatsächliche Cannon-Fahrphysik. Für die Szenentests wird die Grafikausgabe ersetzt; Geometrie und Physik verwenden die lokalen Originalbibliotheken. Die Prüfung der echten Darstellung und die Browserdurchläufe stehen in `docs/phases.md`.
+Add a file under `data/` that appends a level object to `AIWorld.levels`, then include it in `index.html` after `data/world.js`. Level content is kept outside `app.js`.
 
-## Entwicklung
+A level defines `id`, `number`, `title`, `topic`, `environment`, `vehicle`, `unlockedAfter`, map position, learning objectives, `stations`, `summary`, and `checkpoints`. Stations include explanations, three processing steps, an example, a limitation, and an optional declarative `demo` configuration.
 
-Branch: `feature/world-map`. Nach jeder Phase wird die laufende App geprüft und ein eigener Commit erstellt.
+The progress model uses `completedLevels`, `currentLevel`, and `unlockedLevels`. Additional lists track visited stations, completed demos, and passed questions so learning can resume.
 
-Remote: `https://github.com/capellil033-prog/ai-learning-world.git`. Der Feature-Branch wird per Pull Request geprüft und nicht automatisch in main gemergt.
+## Tests
+
+With Node.js 18 or newer installed, run `node --test` in the project folder.
+
+The 17 automated tests cover the data model, unlocking, storage, demos, and Cannon vehicle physics. Scene tests replace graphics output while using the bundled geometry and physics libraries. Browser checks and screenshots are documented in [docs/phases.md](docs/phases.md).
+
+The complete seven-level journey, saved progress, driving, and desktop/mobile layouts were checked in the browser. Direct file startup could not be tested because the test browser only allows HTTP/HTTPS. Physical touch devices, other browser engines, and different graphics drivers have not been tested.
+
+## Development
+
+The app was developed in eight phases on `feature/world-map`, with a separate commit for each phase. Changes are reviewed through pull requests before being merged into `main`.
+
