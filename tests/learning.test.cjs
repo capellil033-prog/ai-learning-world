@@ -45,3 +45,7 @@ test('agent observations change the successful route and repeated checks reach t
  for(const c of [0,0,1,0,0])s=L.agentStep(d,s,c);assert.equal(s.success,true);assert.equal(s.stopped,true);
  s=start();while(!s.stopped)s=L.agentStep(d,s,0);assert.equal(s.steps,d.maxSteps);assert.equal(s.success,false);
 });
+test('MCP capabilities require a connection and belong to the selected server',()=>{
+ const d=levels.find(l=>l.id==='mcp-harbor')?.stations.find(s=>s.demo?.type==='mcp').demo;if(!d)return;
+ const a=d.servers[0],b=d.servers[1];assert.ok(L.mcpMessage(a,a.capabilities[0].id,false).error);assert.equal(L.mcpMessage(a,a.capabilities[0].id,true).kind,'tool');assert.ok(L.mcpMessage(a,b.capabilities[0].id,true).error);assert.equal(L.mcpMessage(b,b.capabilities[0].id,true).kind,'resource');
+});

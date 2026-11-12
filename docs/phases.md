@@ -22,3 +22,6 @@ Flusslandschaft, Boot, Anleger, Brücke und Tool-Call-Simulation mit Argumentpr�
 
 ## Phase 6 – Agent Forest
 Wald-Biom, Jeep, Wegkreuzungen und datengetriebener Agent Loop. Browserprüfung: manueller Abbruch und erfolgreicher Wegwechsel nach neuer Beobachtung. Acht Tests bestanden; wiederholte Prüfungen stoppen am Schrittlimit.
+
+## Phase 7 – MCP Harbor
+Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und externe Systeme. Browserprüfung: Tool-Aufruf, Serverwechsel, Resource und Prompt erfolgreich dargestellt. Neun Tests bestanden; Verbindung und servereigene Fähigkeiten werden geprüft. Fachliche Rollen mit offiziellen MCP-Dokumenten abgeglichen.
