@@ -13,3 +13,6 @@ Prüfung: App unter http://127.0.0.1:4174 gestartet; Browser zeigt zwei Leveldat
 
 ## Phase 3 – LLM City
 Sieben datengetriebene Stationen, Token-Generierung, Zusammenfassung, Wissenscheck, Tour und wiederverwendete Fahrphysik. Browserprüfung: 7 Stationen bestätigt, Demo vollständig ausgeführt, unbeantworteter Check blockiert Abschluss, 3 richtige Antworten schalten Token Pass frei. Keine Browserfehler.
+
+## Phase 4 – Token Pass
+Originale Bergwelt mit Snowcat, Tunnel, Tokenzerlegung, Kontextladung und Präfix-Cache. Browserprüfung: Berglevel gestartet, Überladung blockiert, relevante Ladung mit Ausgabereserve akzeptiert. Sechs automatisierte Tests für Datenmodell, Speicherung, Freischaltung, Tokenisierung und Kapazität bestanden.
