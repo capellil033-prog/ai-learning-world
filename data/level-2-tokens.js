@@ -2,7 +2,7 @@
 AIWorld.levels.push({
   id: 'token-pass', number: 2, title: 'Token Pass', topic: 'Tokens und Context Window',
   environment: 'snow', vehicle: 'snowcat', vehicleName: 'Snowcat', unlockedAfter: 'llm-city',
-  color: '#527f9a', position: [1050, 300], icon: 'mountain-snow', ready: true, landmark: 'warehouse',
+  color: '#527f9a', position: [630, 260], icon: 'mountain-snow', ready: true, landmark: 'warehouse',
   intro: 'Transportiere relevanten Kontext über den verschneiten Pass. Deine Ladekapazität ist begrenzt.',
   objectives: ['Tokens erkennen', 'Kontext bewusst auswählen', 'Prompt Caching verstehen'],
   stations: [

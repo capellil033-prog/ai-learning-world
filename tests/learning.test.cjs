@@ -39,3 +39,9 @@ test('tool execution rejects malformed JSON, unknown names and wrong argument ty
  for(const raw of ['{broken','null',JSON.stringify({name:'delete',arguments:{city:'Berlin'}}),JSON.stringify({name:'weather',arguments:{city:12}}),JSON.stringify({name:'weather',arguments:{city:'__proto__'}})])assert.ok(L.toolCall(raw,d).error);
  assert.equal(L.toolCall(JSON.stringify(d.call),d).result.temperature,18);
 });
+test('agent observations change the successful route and repeated checks reach the limit',()=>{
+ const d=levels.find(l=>l.id==='agent-forest')?.stations.find(s=>s.demo?.type==='agent').demo;if(!d)return;
+ const start=()=>({node:d.start,steps:0,stopped:false,success:false,history:[]});let s=start();
+ for(const c of [0,0,1,0,0])s=L.agentStep(d,s,c);assert.equal(s.success,true);assert.equal(s.stopped,true);
+ s=start();while(!s.stopped)s=L.agentStep(d,s,0);assert.equal(s.steps,d.maxSteps);assert.equal(s.success,false);
+});

@@ -19,3 +19,6 @@ Originale Bergwelt mit Snowcat, Tunnel, Tokenzerlegung, Kontextladung und Präfi
 
 ## Phase 5 – Tool River
 Flusslandschaft, Boot, Anleger, Brücke und Tool-Call-Simulation mit Argumentprüfung. Browserprüfung: Nach Token-Pass-Abschluss wird Tool River geöffnet; Werkzeugergebnis wird sichtbar in den Kontext aufgenommen. Keine Browserfehler. Sieben automatisierte Tests bestanden, einschliesslich ungültiger Werkzeugaufrufe.
+
+## Phase 6 – Agent Forest
+Wald-Biom, Jeep, Wegkreuzungen und datengetriebener Agent Loop. Browserprüfung: manueller Abbruch und erfolgreicher Wegwechsel nach neuer Beobachtung. Acht Tests bestanden; wiederholte Prüfungen stoppen am Schrittlimit.
