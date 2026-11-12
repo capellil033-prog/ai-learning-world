@@ -29,7 +29,7 @@ function renderWorld() {
 function enterLevel(id) {
   if (!progress.unlockedLevels.includes(id)) return;
   const level = levels.find(l => l.id === id);
-  if (!level?.ready) { notify('Dieses Gebiet wird im nächsten Entwicklungsschritt geöffnet.'); return; }
+  if (!level?.ready) { notify('Dieses Gebiet ist noch nicht verfügbar.'); return; }
   expedition?.destroy(); learningEvents?.abort();
   learningEvents = new AbortController(); activeLevel = level; stationIndex = 0;
   progress.currentLevel = id; saveProgress(); WorldAtlas.destroy();
@@ -42,6 +42,7 @@ function enterLevel(id) {
   document.querySelector('#level-view .intro .eyebrow').textContent = `LEVEL ${String(level.number).padStart(2,'0')} / KI VERSTEHEN`;
   document.querySelector('#level-view .world-top .eyebrow').textContent = level.title.toUpperCase()+' / LERNROUTE';
   document.querySelector('#level-view .minimap-button>span').textContent = level.title.toUpperCase()+' · ROUTE';
+  document.querySelector('#level-view .sidebar-footer').innerHTML = `<i data-lucide="radio"></i> LOKALE SIMULATION <span>LEVEL ${String(level.number).padStart(2,'0')}</span>`;
   document.querySelector('#level-view .world').setAttribute('aria-label',`Interaktive 3D-Landschaft: ${level.title}`);
   const on=(id,event,fn)=>$(id).addEventListener(event,fn,{signal:learningEvents.signal});
   on('station-list','click',e=>{const button=e.target.closest('[data-index]');if(button){stationIndex=Number(button.dataset.index);expedition.select(stationIndex);openStation(stationIndex);}});
@@ -82,7 +83,7 @@ function openCheckpoint(){
   dialog.innerHTML=`<div class="dialog-header"><span class="eyebrow">${level.title.toUpperCase()} / REISECHECK</span><button class="icon-button" id="close-checkpoint" aria-label="Wissenscheck schliessen">×</button></div><h2 id="checkpoint-heading">Das nimmst du mit.</h2><ul class="checklist">${level.summary.map(t=>`<li>${t}</li>`).join('')}</ul><h3>Teste dein Verständnis</h3><form id="quiz-form">${level.checkpoints.map((q,i)=>`<fieldset class="quiz-question"><legend>${i+1}. ${q.question}</legend>${q.options.map((o,j)=>`<label><input type="radio" name="${q.id}" value="${j}" ${progress.passedCheckpoints[level.id].includes(q.id)&&q.answer===j?'checked':''}> <span>${o}</span></label>`).join('')}<p class="quiz-feedback" id="feedback-${q.id}"></p></fieldset>`).join('')}<button class="secondary" type="submit">Antworten prüfen</button></form><p class="completion-state" id="completion-state" role="status"></p><button class="primary" id="complete-level" disabled>Level abschliessen <i data-lucide="check"></i></button>`;
   $('close-checkpoint').addEventListener('click',()=>dialog.close());
   $('quiz-form').addEventListener('submit',e=>{e.preventDefault();const form=new FormData(e.target);for(const q of level.checkpoints){const value=form.get(q.id),correct=value!==null&&Number(value)===q.answer;const el=$('feedback-'+q.id);el.textContent=(correct?'Richtig. ':value===null?'Bitte wähle eine Antwort. ':'Noch nicht richtig. ')+(value!==null?q.explanation:'');el.classList.toggle('success',correct);const passed=progress.passedCheckpoints[level.id];if(correct&&!passed.includes(q.id))passed.push(q.id);else if(!correct)progress.passedCheckpoints[level.id]=passed.filter(id=>id!==q.id);}saveProgress();updateCompletion();});
-  $('complete-level').addEventListener('click',()=>{if(!WorldProgress.canComplete(level,progress))return;if(!progress.completedLevels.includes(level.id))progress.completedLevels.push(level.id);const next=levels.find(l=>l.unlockedAfter===level.id);progress=WorldProgress.normalize(levels,{...progress,currentLevel:next?.id||level.id});saveProgress();dialog.close();showWorld();selectLevel(next?.id||level.id);notify(next?`${level.title} abgeschlossen. ${next.title} ist jetzt freigeschaltet.`:'Alle sieben Levels abgeschlossen. Deine Lernreise ist vollständig.');});
+  $('complete-level').addEventListener('click',()=>{if(!WorldProgress.canComplete(level,progress))return;if(!progress.completedLevels.includes(level.id))progress.completedLevels.push(level.id);const next=levels.find(l=>l.unlockedAfter===level.id);progress=WorldProgress.normalize(levels,{...progress,currentLevel:next?.id||level.id});saveProgress();dialog.close();showWorld();selectLevel(next?.id||level.id);notify(next?`${level.title} abgeschlossen. ${next.title} ist jetzt freigeschaltet.`:'Alle Levels abgeschlossen. Deine Lernreise ist vollständig.');});
   updateCompletion();if(!dialog.open)dialog.showModal();dialog.scrollTop=0;icons();
 }
 function updateCompletion(){

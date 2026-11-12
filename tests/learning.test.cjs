@@ -49,3 +49,22 @@ test('MCP capabilities require a connection and belong to the selected server',(
  const d=levels.find(l=>l.id==='mcp-harbor')?.stations.find(s=>s.demo?.type==='mcp').demo;if(!d)return;
  const a=d.servers[0],b=d.servers[1];assert.ok(L.mcpMessage(a,a.capabilities[0].id,false).error);assert.equal(L.mcpMessage(a,a.capabilities[0].id,true).kind,'tool');assert.ok(L.mcpMessage(a,b.capabilities[0].id,true).error);assert.equal(L.mcpMessage(b,b.capabilities[0].id,true).kind,'resource');
 });
+test('retrieval ranks example vectors but requires an appropriate current source',()=>{
+ const d=levels.find(l=>l.id==='retrieval-desert').stations.find(s=>s.demo?.type==='retrieval').demo;
+ for(const q of d.queries){assert.equal(L.search(d,q,'semantic')[0].id,q.required[0]);assert.equal(L.retrieve(q,q.required),true);assert.equal(L.retrieve(q,['old']),false);assert.equal(L.retrieve(q,[...q.required,'cafe']),false);}
+ assert.equal(L.cosine([0,0],[1,0]),0);assert.ok(Math.abs(L.cosine([1,0],[1,0])-1)<1e-10);
+});
+test('evaluation exposes faulty output and accepts the supplied corrected output',()=>{
+ const d=levels.find(l=>l.id==='verification-lab').stations.find(s=>s.demo?.type==='evaluation').demo;
+ assert.equal(L.evaluate(d,d.candidates[0]).filter(r=>r.passed).length,1);
+ assert.equal(L.evaluate(d,d.candidates[1]).every(r=>r.passed),true);
+});
+test('all seven levels can complete sequentially and resume with their learning state',()=>{
+ assert.equal(levels.length,7);let p=P.normalize(levels);
+ for(const level of levels){assert.ok(p.unlockedLevels.includes(level.id));p.visitedStations[level.id]=level.stations.map(s=>s.id);p.completedDemos[level.id]=level.stations.filter(s=>s.demo).map(s=>s.demo.id);p.passedCheckpoints[level.id]=level.checkpoints.map(q=>q.id);assert.ok(P.canComplete(level,p));p.completedLevels.push(level.id);p=P.normalize(levels,JSON.parse(JSON.stringify(p)));}
+ assert.equal(p.completedLevels.length,7);assert.equal(p.unlockedLevels.length,7);
+});
+test('all scripts and styles are local and present for offline startup',()=>{
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');const scripts=[...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m=>m[1]),styles=[...html.matchAll(/<link[^>]+href="([^"]+)"/g)].map(m=>m[1]);for(const file of [...scripts,...styles]){assert.ok(!file.startsWith('http'));assert.ok(fs.existsSync(path.join(root,file.split('?')[0])),file);}
+ assert.ok(!html.includes('lib/token-transit.js'));
+});

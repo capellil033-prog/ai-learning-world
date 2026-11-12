@@ -24,4 +24,3 @@ AIWorld.levels.push({
   {id:'stop',question:'Warum braucht ein Agent eine Abbruchbedingung?',options:['Damit er nie Werkzeuge nutzt.','Damit jede Antwort wahr wird.','Damit Zeit, Budget und menschliche Kontrolle gewahrt bleiben.'],answer:2,explanation:'Die Anwendung muss Schleifen begrenzen und Abbrüche sichtbar machen.'}
  ]
 });
-
