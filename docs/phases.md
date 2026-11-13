@@ -36,6 +36,7 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 ## Phase 9 – Freie Planetenreise und Umgebungsdetails
 
 - Die flache Weltkarte wurde durch einen dreh- und zoombaren KI-Planeten mit Sternenraum, sieben Biomen und anklickbaren Levelmarkierungen ersetzt.
+- Die früheren runden Biome-Plattformen wurden durch grosse, unregelmässige und an die Kugel gekrümmte Landschaften ersetzt. Organische Küsten, Low-Poly-Ozeanstruktur, Wolken, Flüsse, Berge, Wälder, Dünen, Hafenstege, Stadtstrassen und Laborstrukturen unterscheiden die Gebiete sichtbar.
 - Alle Levels sind von Beginn an frei wählbar. Besuche und ausdrücklich markierte Abschlüsse werden unabhängig gespeichert.
 - Stationsbesuche werden beim Öffnen gespeichert. Demos, Zusammenfassung und Wissenscheck bleiben verfügbar, sind aber keine Pflicht.
 - **Karte ansehen** schliesst das aktuelle Pop-up, ohne automatisch ein weiteres Pop-up zu öffnen. Es gibt keinen separaten Wegweiser mehr.

@@ -32,7 +32,7 @@ Each level includes an introduction, learning stations, optional interactive dem
 
 ## Controls and progress
 
-- **AI planet:** drag to rotate the planet, use the mouse wheel to zoom, select any region, and click **Level erkunden**. A short animated transition prepares the level.
+- **AI planet:** drag to rotate the planet, use the mouse wheel to zoom, select any region, and click **Level erkunden**. Seven large, irregular biomes curve around the low-poly ocean and contain their own vegetation, terrain, waterways, buildings, and landmarks. A short animated transition prepares the level.
 - **Stations:** opening a station records it as visited. **Karte ansehen** closes the explanation without opening another pop-up. After the final station, the level remains freely drivable for 15 seconds before returning to the planet automatically; the countdown stays hidden.
 - **Demos:** every demo remains available for exploration, but no demo is required to continue or complete a level.
 - **Tour:** drive to the selected station and stop automatically. Parking in a marked bay for 0.65 seconds opens its explanation. Moving vehicles create water, snow, sand, or dust trails that match the environment.
