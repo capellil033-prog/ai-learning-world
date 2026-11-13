@@ -28,17 +28,17 @@ The 3D view requires WebGL. Stations, demos, and knowledge checks remain accessi
 6. **Retrieval Desert:** an off-road vehicle, keyword/vector search, source selection, grounding, and RAG.
 7. **Verification Lab:** a shuttle, evidence checks, tests, evaluation, validation, and human review.
 
-Each level includes an introduction, learning stations, interactive demos, a summary, and three checkpoint questions. Initially, only LLM City is available. Complete its stations, demos, and knowledge check to unlock the next region.
+Each level includes an introduction, learning stations, optional interactive demos, a summary, and three optional checkpoint questions. All seven levels are freely selectable from the start; visits and explicit completions are tracked independently.
 
 ## Controls and progress
 
-- **World map:** select a region and click **Level erkunden**. On smaller screens, scroll the map horizontally.
-- **Stations:** open a station, read its explanation, try its demo, and click **Station verstanden**.
-- **Demos:** complete the interaction itself. **Verstanden ✓** confirms the station, but does not automatically complete its demo. In LLM City's **Modell-Fabrik**, click **Nächstes Token** seven times to finish the token-generation demo.
+- **AI planet:** drag to rotate the planet, use the mouse wheel to zoom, select any region, and click **Level erkunden**. A short animated transition prepares the level.
+- **Stations:** opening a station records it as visited. **Nächster Wegweiser** closes the explanation and marks the next destination without opening another pop-up.
+- **Demos:** every demo remains available for exploration, but no demo is required to continue or complete a level.
 - **Tour:** drive to the selected station and stop automatically. Parking in a marked bay for 0.65 seconds opens its explanation.
 - **W / ↑:** accelerate. **S / ↓:** brake and reverse. **A/D / ←/→:** steer. **Space:** stop. **P:** toggle cruise control. Manual input takes control.
 - **Touch:** hold the pedal and steering buttons. Drag to rotate the camera; use the mouse wheel or +/− to zoom. The map button toggles the overview.
-- **Wissenscheck:** open the summary and quiz. **Weltkarte:** return to the world map.
+- **Zusammenfassung:** open the summary and optional quiz, or mark the level as completed directly. **Weltkarte:** return to the planet.
 
 Resetting the vehicle resets the drive while keeping your learning progress.
 
@@ -64,19 +64,18 @@ The original Token Transit files were left unchanged. Their SHA-256 hashes are r
 
 Add a file under `data/` that appends a level object to `AIWorld.levels`, then include it in `index.html` after `data/world.js`. Level content is kept outside `app.js`.
 
-A level defines `id`, `number`, `title`, `topic`, `environment`, `vehicle`, `unlockedAfter`, map position, learning objectives, `stations`, `summary`, and `checkpoints`. Stations include explanations, three processing steps, an example, a limitation, and an optional declarative `demo` configuration.
+A level defines `id`, `number`, `title`, `topic`, `environment`, `vehicle`, map position, learning objectives, `stations`, `summary`, and `checkpoints`. The legacy `unlockedAfter` field documents the recommended learning order but does not restrict access. Stations include explanations, three processing steps, an example, a limitation, and an optional declarative `demo` configuration.
 
-The progress model uses `completedLevels`, `currentLevel`, and `unlockedLevels`. Additional lists track visited stations, completed demos, and passed questions so learning can resume.
+The progress model uses `visitedLevels`, `completedLevels`, `currentLevel`, and `unlockedLevels`. All level IDs are present in `unlockedLevels`; additional lists track visited stations, completed demos, and passed questions so learning can resume without making optional activities mandatory.
 
 ## Tests
 
 With Node.js 18 or newer installed, run `node --test` in the project folder.
 
-The 17 automated tests cover the data model, unlocking, storage, demos, and Cannon vehicle physics. Scene tests replace graphics output while using the bundled geometry and physics libraries. Browser checks and screenshots are documented in [docs/phases.md](docs/phases.md).
+The 17 automated tests cover the data model, free level selection, storage, optional demos, and Cannon vehicle physics. Scene tests replace graphics output while using the bundled geometry and physics libraries. Browser checks and screenshots are documented in [docs/phases.md](docs/phases.md).
 
 The complete seven-level journey, saved progress, driving, and desktop/mobile layouts were checked in the browser. Direct file startup could not be tested because the test browser only allows HTTP/HTTPS. Physical touch devices, other browser engines, and different graphics drivers have not been tested.
 
 ## Development
 
 The app was developed in eight phases on `feature/world-map`, with a separate commit for each phase. Changes are reviewed through pull requests before being merged into `main`.
-
