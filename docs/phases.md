@@ -33,15 +33,25 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 - Browserprüfung: veraltete Quelle zurückgewiesen; passende Quellen für beide Fragen in den Kontext aufgenommen; Beleg, Widerspruch und fehlende Information korrekt zugeordnet.
 - Fehlerhafte Beispielantwort besteht nur 1/3 Tests und bleibt gesperrt. Die korrigierte Antwort besteht 3/3 Tests; Freigabe erfordert zusätzlich bestätigte menschliche Prüfung.
 
+## Phase 9 – Freie Planetenreise und Umgebungsdetails
+
+- Die flache Weltkarte wurde durch einen dreh- und zoombaren KI-Planeten mit Sternenraum, sieben Biomen und anklickbaren Levelmarkierungen ersetzt.
+- Alle Levels sind von Beginn an frei wählbar. Besuche und ausdrücklich markierte Abschlüsse werden unabhängig gespeichert.
+- Stationsbesuche werden beim Öffnen gespeichert. Demos, Zusammenfassung und Wissenscheck bleiben verfügbar, sind aber keine Pflicht.
+- **Nächster Wegweiser** schliesst das aktuelle Pop-up und markiert das nächste Ziel in 3D und auf der Minimap, ohne automatisch ein weiteres Pop-up zu öffnen.
+- Tool River und MCP Harbor verwenden Docks. Boote bleiben innerhalb des Fahrwassers und erzeugen eine animierte Wasser-Wake.
+- Fahrzeuge erzeugen je nach Umgebung Wasser-, Schnee-, Sand- oder Staubpartikel. Gelände, Grasstruktur, Hügel und eine Holz-Hängebrücke ergänzen die Routen.
+- Ein animierter Ladeübergang verbindet Planet und Level.
+
 ## Abschliessende Gesamtprüfung
 
-- Vollständige Freischaltkette im Browser von LLM City bis Verification Lab durchgespielt: **7/7 abgeschlossen**. Neuladen stellt den gespeicherten Fortschritt wieder her.
-- Frischer Browser-Ursprung: **0/7**, LLM City verfügbar, Token Pass und weitere Gebiete gesperrt. Der gesperrte Einstieg lässt sich nicht ausführen.
+- Frischer Browser-Ursprung: **0/7 besucht**, alle sieben Levels frei verfügbar. Verification Lab wurde ohne vorherige Levels direkt gestartet.
+- Besuche und Abschlüsse bleiben nach der Rückkehr zum Planeten getrennt sichtbar. Alte Speicherstände werden defensiv in das neue Modell übernommen.
 - Manuelle Fahrt im Browser: W beschleunigt das Fahrzeug, Anzeige zeigt MANUELL und Geschwindigkeit. Geführte Fahrt erreicht eine Parkbucht und öffnet nach dem Halt die richtige Station.
-- Desktop mit 1440 × 1000 und schmale Ansichten mit 390 × 844 und 320 × 800 geprüft. Die Karte scrollt innerhalb ihres Containers; die Seite läuft nicht horizontal über. Der letzte Bedienknopf liegt nach der Korrektur auch bei 305 CSS-Pixeln nutzbarer Breite innerhalb der Ansicht.
+- Der drehbare Planet, der animierte Levelwechsel, Verification Lab und Tool River wurden im Desktop-Browser geprüft. Frühere schmale Ansichten mit 390 × 844 und 320 × 800 bleiben durch die bestehenden Breakpoints abgedeckt.
 - Mobiles Stationsfenster mit Demo geprüft: kein horizontaler Überlauf, Inhalt vertikal scrollbar.
 - **17 automatisierte Tests bestanden** (`node --test`), einschliesslich sieben 3D-Umgebungen/Fahrzeugen, echter Cannon-Fahrphysik mit ersetzter Grafikausgabe und fehlender 3D-Bibliothek.
-- JavaScript-Syntax aller eigenen Skripte geprüft. Keine Fehler in der Browserkonsole beim finalen Start von Token Pass.
+- JavaScript-Syntax aller eigenen Skripte geprüft. Keine Fehler in der Browserkonsole beim finalen Start von Verification Lab und Tool River; nur der bekannte Deprecation-Hinweis der lokal gebündelten Three.js-UMD-Datei erscheint.
 - SHA-256-Vergleich: alle vier Token-Transit-Quelldateien unverändert.
 - Bildschirmnachweise: `screenshots/world-map.jpg`, `screenshots/token-pass.jpg`, `screenshots/mobile-lesson.jpg`.
 

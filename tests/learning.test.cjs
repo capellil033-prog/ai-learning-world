@@ -12,18 +12,17 @@ const P=require('../lib/progress.js'),L=require('../lib/logic.js');
 test('world data has a contiguous prerequisite chain and usable learning content',()=>{
   const ids=new Set();levels.forEach((l,i)=>{assert.equal(l.number,i+1);assert.equal(l.unlockedAfter,i?levels[i-1].id:null);assert.ok(!ids.has(l.id));ids.add(l.id);if(!l.ready)return;assert.ok(l.stations.length>=3);assert.ok(l.stations.some(s=>s.demo));assert.ok(l.checkpoints.length>=3);for(const q of l.checkpoints)assert.ok(Number.isInteger(q.answer)&&q.answer>=0&&q.answer<q.options.length);assert.equal(new Set(l.stations.map(s=>s.id)).size,l.stations.length);});
 });
-test('corrupt and unavailable storage fall back to only level one',()=>{
-  for(const storage of [{getItem(){return '{broken';}},{getItem(){throw Error('blocked');}},{getItem(){return 'null';}}])assert.deepEqual(P.load(levels,storage,'x').unlockedLevels,[levels[0].id]);
+test('corrupt and unavailable storage keep every level freely available',()=>{
+  for(const storage of [{getItem(){return '{broken';}},{getItem(){throw Error('blocked');}},{getItem(){return 'null';}}]){const p=P.load(levels,storage,'x');assert.deepEqual(p.unlockedLevels,levels.map(level=>level.id));assert.deepEqual(p.visitedLevels,[]);}
 });
-test('prerequisites cannot be skipped with stale or inconsistent saved state',()=>{
-  const p=P.normalize(levels,{completedLevels:[levels[1].id],unlockedLevels:levels.map(l=>l.id),currentLevel:levels[1].id});assert.deepEqual(p.completedLevels,[]);assert.deepEqual(p.unlockedLevels,[levels[0].id]);
+test('levels preserve independent visit and completion state without prerequisites',()=>{
+  const p=P.normalize(levels,{completedLevels:[levels[4].id,'missing'],visitedLevels:[levels[4].id,levels[1].id,levels[4].id],currentLevel:levels[4].id});
+  assert.deepEqual(p.completedLevels,[levels[4].id]);assert.deepEqual(p.visitedLevels,[levels[4].id,levels[1].id]);assert.deepEqual(p.unlockedLevels,levels.map(level=>level.id));assert.equal(p.currentLevel,levels[4].id);
 });
-test('completion needs visited stations, demo and correct checkpoints',()=>{
-  const level=levels[0],p=P.normalize(levels);assert.equal(P.canComplete(level,p),false);
-  p.visitedStations[level.id]=level.stations.map(s=>s.id);p.passedCheckpoints[level.id]=level.checkpoints.map(q=>q.id);assert.equal(P.canComplete(level,p),false);
-  p.completedDemos[level.id]=level.stations.filter(s=>s.demo).map(s=>s.demo.id);assert.equal(P.canComplete(level,p),true);
-  p.completedLevels.push(level.id);const next=P.normalize(levels,p);assert.ok(next.unlockedLevels.includes(levels[1].id));
-  assert.deepEqual(next.visitedStations[level.id],p.visitedStations[level.id]);
+test('station demos and knowledge checks are optional for level completion',()=>{
+  const level=levels[0],p=P.normalize(levels);assert.equal(P.canComplete(level,p),true);
+  p.completedLevels.push(level.id);const saved=P.normalize(levels,p);assert.ok(saved.unlockedLevels.includes(levels.at(-1).id));
+  assert.deepEqual(saved.visitedStations[level.id],[]);assert.deepEqual(saved.completedDemos[level.id],[]);assert.deepEqual(saved.passedCheckpoints[level.id],[]);
 });
 test('illustrative tokenization preserves text including whitespace and Unicode',()=>{
   for(const text of ['Schneefahrzeug!','Grüezi 👋\n世界','  Kontext  mit  Leerzeichen ',''])assert.equal(L.tokenize(text).join(''),text);
@@ -59,9 +58,9 @@ test('evaluation exposes faulty output and accepts the supplied corrected output
  assert.equal(L.evaluate(d,d.candidates[0]).filter(r=>r.passed).length,1);
  assert.equal(L.evaluate(d,d.candidates[1]).every(r=>r.passed),true);
 });
-test('all seven levels can complete sequentially and resume with their learning state',()=>{
+test('all seven levels can complete in any order and resume with optional learning state',()=>{
  assert.equal(levels.length,7);let p=P.normalize(levels);
- for(const level of levels){assert.ok(p.unlockedLevels.includes(level.id));p.visitedStations[level.id]=level.stations.map(s=>s.id);p.completedDemos[level.id]=level.stations.filter(s=>s.demo).map(s=>s.demo.id);p.passedCheckpoints[level.id]=level.checkpoints.map(q=>q.id);assert.ok(P.canComplete(level,p));p.completedLevels.push(level.id);p=P.normalize(levels,JSON.parse(JSON.stringify(p)));}
+ for(const level of [...levels].reverse()){assert.ok(p.unlockedLevels.includes(level.id));p.visitedLevels.push(level.id);p.visitedStations[level.id]=level.stations.slice(0,1).map(s=>s.id);assert.ok(P.canComplete(level,p));p.completedLevels.push(level.id);p=P.normalize(levels,JSON.parse(JSON.stringify(p)));}
  assert.equal(p.completedLevels.length,7);assert.equal(p.unlockedLevels.length,7);
 });
 test('all scripts and styles are local and present for offline startup',()=>{
