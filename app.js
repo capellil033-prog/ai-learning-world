@@ -6,12 +6,23 @@ let progress;
 try { progress = WorldProgress.load(levels, localStorage, AIWorld.storageKey); }
 catch { progress = WorldProgress.normalize(levels); }
 let selectedLevel = progress.currentLevel;
-let activeLevel, expedition, learningEvents, stationIndex = 0, loadingLevel = false;
+let activeLevel, expedition, learningEvents, stationIndex = 0, loadingLevel = false, levelReturnTimer;
+const LEVEL_RETURN_DELAY = 15000;
 function saveProgress() {
   try { localStorage.setItem(AIWorld.storageKey, JSON.stringify(progress)); }
   catch { $('storage-note').hidden = false; $('storage-note').textContent = 'Speichern ist blockiert. Dein Fortschritt bleibt für diese Sitzung erhalten.'; }
 }
 function notify(text) { $('notice').textContent = text; $('notice').hidden = false; clearTimeout(notify.timer); notify.timer = setTimeout(() => $('notice').hidden = true, 4500); }
+function clearLevelReturnTimer() { clearTimeout(levelReturnTimer); levelReturnTimer = undefined; }
+function scheduleLevelReturn() {
+  const levelId = activeLevel?.id;
+  if (!levelId) return;
+  clearLevelReturnTimer();
+  levelReturnTimer = setTimeout(() => {
+    levelReturnTimer = undefined;
+    if (activeLevel?.id === levelId) showWorld();
+  }, LEVEL_RETURN_DELAY);
+}
 function selectLevel(id) { selectedLevel = id; renderWorld(); }
 function renderWorld() {
   $('level-count').textContent = `${levels.length} LEVELS`;
@@ -28,6 +39,7 @@ function renderWorld() {
 }
 async function enterLevel(id) {
   if (loadingLevel || !progress.unlockedLevels.includes(id)) return;
+  clearLevelReturnTimer();
   const level = levels.find(l => l.id === id);
   if (!level?.ready) { notify('Dieses Gebiet ist noch nicht verfügbar.'); return; }
   loadingLevel = true;
@@ -57,7 +69,11 @@ async function enterLevel(id) {
     on('summary-button','click',openCheckpoint);
     on('help-button','click',()=>{expedition?.pause();$('help-dialog').showModal();});
     on('close-help','click',()=>$('help-dialog').close());
-    $('station-dialog').addEventListener('close',()=>expedition?.pause(),{signal:learningEvents.signal});
+    $('station-dialog').addEventListener('close',()=>{
+      expedition?.pause();
+      const closedIndex=Number($('station-dialog').dataset.stationIndex);
+      if(activeLevel&&closedIndex===activeLevel.stations.length-1)scheduleLevelReturn();
+    },{signal:learningEvents.signal});
     $('checkpoint-dialog').addEventListener('close',()=>expedition?.pause(),{signal:learningEvents.signal});
     expedition=createExpedition({level,visited:progress.visitedStations[id],onTarget:index=>{stationIndex=index;renderStationList();},onStation:(index,arrived)=>openStation(index,arrived)});
     $('route-count').textContent=`${level.stations.length} STATIONEN`;
@@ -80,9 +96,10 @@ function openStation(index,arrived=false){
   const level=activeLevel,s=level.stations[index];stationIndex=index;expedition?.pause();
   markStation(s.id);
   const visited=progress.visitedStations[level.id].includes(s.id),dialog=$('station-dialog');
-  dialog.innerHTML=`<div class="dialog-header"><span class="eyebrow">${arrived?'STATION ERREICHT':visited?'BESUCHTE STATION':'STATION ERKUNDEN'} / ${index+1} VON ${level.stations.length}</span><button class="icon-button" id="close-station" aria-label="Station schliessen">×</button></div><div class="station-dialog-heading"><span class="station-emblem"><i data-lucide="${s.icon}"></i></span><div><span class="eyebrow">${s.subtitle}</span><h2 id="station-heading">${s.name}</h2></div><span class="large-number">${String(index+1).padStart(2,'0')}</span></div><p class="station-dialog-intro">${s.text}</p><section class="process-section"><h3>Was passiert hier?</h3><ol class="process-steps">${s.steps.map((t,i)=>`<li><span>${i+1}</span><p>${t}</p></li>`).join('')}</ol></section><section class="example-section"><h3>Ein konkretes Beispiel</h3><pre>${s.example}</pre></section>${s.demo?'<p class="optional-label">OPTIONAL · INTERAKTIVE DEMO</p>':''}<div id="station-demo"></div><aside class="station-caution"><i data-lucide="info"></i><p>${s.caution}</p></aside><div class="station-dialog-footer"><span id="read-status">${progress.visitedStations[level.id].length} / ${level.stations.length} Stationen besucht</span><button class="primary" id="station-next">${index<level.stations.length-1?'Nächster Wegweiser':'Route ansehen'} <i data-lucide="arrow-right"></i></button></div>`;
+  dialog.dataset.stationIndex=String(index);
+  dialog.innerHTML=`<div class="dialog-header"><span class="eyebrow">${arrived?'STATION ERREICHT':visited?'BESUCHTE STATION':'STATION ERKUNDEN'} / ${index+1} VON ${level.stations.length}</span><button class="icon-button" id="close-station" aria-label="Station schliessen">×</button></div><div class="station-dialog-heading"><span class="station-emblem"><i data-lucide="${s.icon}"></i></span><div><span class="eyebrow">${s.subtitle}</span><h2 id="station-heading">${s.name}</h2></div><span class="large-number">${String(index+1).padStart(2,'0')}</span></div><p class="station-dialog-intro">${s.text}</p><section class="process-section"><h3>Was passiert hier?</h3><ol class="process-steps">${s.steps.map((t,i)=>`<li><span>${i+1}</span><p>${t}</p></li>`).join('')}</ol></section><section class="example-section"><h3>Ein konkretes Beispiel</h3><pre>${s.example}</pre></section>${s.demo?'<p class="optional-label">OPTIONAL · INTERAKTIVE DEMO</p>':''}<div id="station-demo"></div><aside class="station-caution"><i data-lucide="info"></i><p>${s.caution}</p></aside><div class="station-dialog-footer"><span id="read-status">${progress.visitedStations[level.id].length} / ${level.stations.length} Stationen besucht</span><button class="primary" id="station-next">Karte ansehen <i data-lucide="map"></i></button></div>`;
   $('close-station').addEventListener('click',()=>dialog.close());
-  $('station-next').addEventListener('click',()=>{dialog.close();if(index<level.stations.length-1){expedition.select(index+1);notify(`Wegweiser zu ${level.stations[index+1].name} aktiviert.`);}else notify('Alle Stationen sind frei erreichbar. Der Wissenscheck bleibt optional.');});
+  $('station-next').addEventListener('click',()=>dialog.close());
   if(s.demo)LearningDemos.render($('station-demo'),s.demo,id=>{const done=progress.completedDemos[level.id];if(!done.includes(id)){done.push(id);saveProgress();}});
   if(!dialog.open)dialog.showModal();dialog.scrollTop=0;renderStationList();icons();
 }
@@ -103,7 +120,7 @@ function updateCompletion(){
   $('completion-state').textContent=`${visited}/${l.stations.length} Stationen besucht · optional: ${done}/${demos} Demos und ${passed}/${l.checkpoints.length} Antworten`;
 }
 function showWorld(){
-  document.querySelectorAll('dialog[open]').forEach(d=>d.close());expedition?.destroy();expedition=null;learningEvents?.abort();activeLevel=null;
+  clearLevelReturnTimer();activeLevel=null;document.querySelectorAll('dialog[open]').forEach(d=>d.close());expedition?.destroy();expedition=null;learningEvents?.abort();
   $('world-view').hidden=false;$('level-view').hidden=true;$('level-view').innerHTML='';selectedLevel=progress.currentLevel;renderWorld();window.scrollTo(0,0);
   $('help-button').hidden=true;
 }
