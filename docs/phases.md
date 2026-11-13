@@ -38,7 +38,8 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 - Die flache Weltkarte wurde durch einen dreh- und zoombaren KI-Planeten mit Sternenraum, sieben Biomen und anklickbaren Levelmarkierungen ersetzt.
 - Alle Levels sind von Beginn an frei wählbar. Besuche und ausdrücklich markierte Abschlüsse werden unabhängig gespeichert.
 - Stationsbesuche werden beim Öffnen gespeichert. Demos, Zusammenfassung und Wissenscheck bleiben verfügbar, sind aber keine Pflicht.
-- **Nächster Wegweiser** schliesst das aktuelle Pop-up und markiert das nächste Ziel in 3D und auf der Minimap, ohne automatisch ein weiteres Pop-up zu öffnen.
+- **Karte ansehen** schliesst das aktuelle Pop-up, ohne automatisch ein weiteres Pop-up zu öffnen. Es gibt keinen separaten Wegweiser mehr.
+- Nach dem Schliessen der letzten Stationskarte bleiben 15 Sekunden zum freien Fahren; danach wechselt die App automatisch und ohne sichtbaren Countdown zurück zum Planeten.
 - Tool River und MCP Harbor verwenden Docks. Boote bleiben innerhalb des Fahrwassers und erzeugen eine animierte Wasser-Wake.
 - Fahrzeuge erzeugen je nach Umgebung Wasser-, Schnee-, Sand- oder Staubpartikel. Gelände, Grasstruktur, Hügel und eine Holz-Hängebrücke ergänzen die Routen.
 - Ein animierter Ladeübergang verbindet Planet und Level.
