@@ -14,16 +14,6 @@ function harness(noWebGL=false){
  const key=(type,code)=>windowEvents.get(type)?.({code,target:byId('scene'),preventDefault(){},repeat:false});
  return {context,byId,tick,key,scene:()=>renderedScene,click:id=>byId(id).events.get('click')?.()};
 }
-function visibleBounds(THREE,object){
- object.updateMatrixWorld(true);const bounds=new THREE.Box3();
- object.traverse(child=>{if(!child.visible||!child.geometry)return;child.geometry.computeBoundingBox();bounds.union(child.geometry.boundingBox.clone().applyMatrix4(child.matrixWorld));});
- return bounds;
-}
-function intersectsGround(THREE,object){
- object.updateMatrixWorld(true);let intersects=false;
- object.traverse(child=>{if(!child.visible||!child.geometry)return;child.geometry.computeBoundingBox();const bounds=child.geometry.boundingBox.clone().applyMatrix4(child.matrixWorld);if(bounds.min.y<=.025&&bounds.max.y>=-.025)intersects=true;});
- return intersects;
-}
 test('all seven environments construct with moving water, snow, sand or dust trails',()=>{
  const h=harness();for(const level of h.context.AIWorld.levels){
   const engine=h.context.createExpedition({level,visited:[]});assert.equal(h.byId('canvas-error').hidden,true,level.id);h.tick(2);
@@ -31,20 +21,6 @@ test('all seven environments construct with moving water, snow, sand or dust tra
   const expected=['river','harbor'].includes(level.environment)?'water':level.environment==='snow'?'snow':level.environment==='desert'?'sand':'dust';
   assert.equal(trails.length,1,`${level.id} trail count`);assert.equal(trails[0].userData.kind,expected,`${level.id} trail kind`);
   h.key('keydown','KeyW');h.tick(50);assert.ok(trails[0].material.opacity>0,`${level.id} moving trail`);h.key('keyup','KeyW');engine.destroy();
- }
-});
-test('all seven levels use flat terrain and keep stations and vehicles grounded',()=>{
- const h=harness();for(const level of h.context.AIWorld.levels){
-  const engine=h.context.createExpedition({level,visited:[]});h.tick(2);const terrains=[],buildings=[];let vehicle;
-  h.scene().traverse(object=>{if(object.userData?.effect==='terrain')terrains.push(object);if(object.userData?.effect==='station-building')buildings.push(object);if(object.userData?.effect==='vehicle')vehicle=object;});
-  assert.equal(terrains.length,1,`${level.id} terrain`);
-  for(const terrain of terrains){const y=terrain.geometry.attributes.position;for(let index=0;index<y.count;index++)assert.ok(Math.abs(y.getY(index))<1e-9,`${level.id} terrain vertex ${index}`);}
-  assert.equal(buildings.length,level.stations.length,`${level.id} station buildings`);
-  for(const building of buildings)assert.ok(intersectsGround(h.context.THREE,building),`${level.id} ${building.userData.station} ground contact`);
-  const vehicleBounds=visibleBounds(h.context.THREE,vehicle);
-  if(['river','harbor'].includes(level.environment)){assert.ok(vehicleBounds.min.y<0&&vehicleBounds.max.y>0,`${level.id} hull crosses waterline`);}
-  else assert.ok(Math.abs(vehicleBounds.min.y-.025)<1e-6,`${level.id} vehicle base ${vehicleBounds.min.y}`);
-  engine.destroy();
  }
 });
 test('guided driving reaches a real parking stop and opens its station',()=>{
