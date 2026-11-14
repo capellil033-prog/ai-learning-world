@@ -71,8 +71,7 @@ async function enterLevel(id) {
     on('close-help','click',()=>$('help-dialog').close());
     $('station-dialog').addEventListener('close',()=>{
       expedition?.pause();
-      const closedIndex=Number($('station-dialog').dataset.stationIndex);
-      if(activeLevel&&closedIndex===activeLevel.stations.length-1)scheduleLevelReturn();
+      if(WorldProgress.hasVisitedAllStations(activeLevel,progress))scheduleLevelReturn();
     },{signal:learningEvents.signal});
     $('checkpoint-dialog').addEventListener('close',()=>expedition?.pause(),{signal:learningEvents.signal});
     expedition=createExpedition({level,visited:progress.visitedStations[id],onTarget:index=>{stationIndex=index;renderStationList();},onStation:(index,arrived)=>openStation(index,arrived)});
