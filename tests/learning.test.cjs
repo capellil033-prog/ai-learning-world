@@ -24,6 +24,13 @@ test('station demos and knowledge checks are optional for level completion',()=>
   p.completedLevels.push(level.id);const saved=P.normalize(levels,p);assert.ok(saved.unlockedLevels.includes(levels.at(-1).id));
   assert.deepEqual(saved.visitedStations[level.id],[]);assert.deepEqual(saved.completedDemos[level.id],[]);assert.deepEqual(saved.passedCheckpoints[level.id],[]);
 });
+test('automatic return becomes eligible only after every station was visited',()=>{
+  const level=levels[0],p=P.normalize(levels);
+  p.visitedStations[level.id]=[level.stations.at(-1).id];
+  assert.equal(P.hasVisitedAllStations(level,p),false);
+  p.visitedStations[level.id]=level.stations.map(station=>station.id).reverse();
+  assert.equal(P.hasVisitedAllStations(level,p),true);
+});
 test('illustrative tokenization preserves text including whitespace and Unicode',()=>{
   for(const text of ['Schneefahrzeug!','Grüezi 👋\n世界','  Kontext  mit  Leerzeichen ',''])assert.equal(L.tokenize(text).join(''),text);
 });
