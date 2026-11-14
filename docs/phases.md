@@ -45,6 +45,8 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 - Nur Boote werden am Verlassen des Fahrwassers gehindert. Snowcat und andere Radfahrzeuge dürfen Strasse und Gelände befahren; fällt die Snowcat tief vom Pass, wird sie sicher auf die Passstrasse zurückgesetzt.
 - Landlevel besitzen schmalere Strassen und deutlich grössere Höhenunterschiede. Steigungen reduzieren Beschleunigung und Tempo, lose Flächen verringern die Lenkhaftung, und die Verfolgungskamera reagiert auf Geschwindigkeit sowie unruhiges Gelände.
 - Wald- und Schneegebiete haben dichtere Baumbestände. Fahrzeuge erzeugen je nach Umgebung Wasser-, Schnee-, Sand- oder Staubpartikel; Gelände, Grasstruktur, Hügel und eine Holz-Hängebrücke ergänzen die Routen.
+- Ein dunkles Mission-Control-UI fasst Levelauswahl, Ziel, Fortschritt und Fahrsteuerung kompakter zusammen; das Roadbook lässt sich während der Fahrt einklappen.
+- Prozedurales Web Audio erzeugt offline einen Weltraum-Drone sowie geschwindigkeits- und untergrundabhängige Motor-, Strassen- und Wassergeräusche. Der globale Sound-Schalter speichert die lokale Präferenz.
 - Ein animierter Ladeübergang verbindet Planet und Level.
 
 ## Abschliessende Gesamtprüfung
@@ -54,7 +56,7 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 - Manuelle Fahrt im Browser: W beschleunigt das Fahrzeug, Anzeige zeigt MANUELL und Geschwindigkeit. Geführte Fahrt erreicht eine Parkbucht und öffnet nach dem Halt die richtige Station.
 - Der drehbare Planet, der animierte Levelwechsel, Verification Lab und Tool River wurden im Desktop-Browser geprüft. Frühere schmale Ansichten mit 390 × 844 und 320 × 800 bleiben durch die bestehenden Breakpoints abgedeckt.
 - Mobiles Stationsfenster mit Demo geprüft: kein horizontaler Überlauf, Inhalt vertikal scrollbar.
-- **23 automatisierte Tests bestanden** (`node --test`), einschliesslich sieben 3D-Umgebungen/Fahrzeugen, exklusiver Bootseffekte, steiler und schmaler Landstrassen, dichter Waldgebiete, Fahrwasserbegrenzung für Boote, Geländefahrt und Snowcat-Absturzbergung mit echter Cannon-Fahrphysik sowie fehlender 3D-Bibliothek.
+- **24 automatisierte Tests bestanden** (`node --test`), einschliesslich prozeduraler Audio-Umschaltung, sieben 3D-Umgebungen/Fahrzeugen, exklusiver Bootseffekte, steiler und schmaler Landstrassen, dichter Waldgebiete, Fahrwasserbegrenzung für Boote, Geländefahrt und Snowcat-Absturzbergung mit echter Cannon-Fahrphysik sowie fehlender 3D-Bibliothek.
 - JavaScript-Syntax aller eigenen Skripte geprüft. Keine Fehler in der Browserkonsole beim finalen Start von Verification Lab und Tool River; nur der bekannte Deprecation-Hinweis der lokal gebündelten Three.js-UMD-Datei erscheint.
 - SHA-256-Vergleich: alle vier Token-Transit-Quelldateien unverändert.
 - Bildschirmnachweise: `screenshots/world-map.jpg`, `screenshots/token-pass.jpg`, `screenshots/mobile-lesson.jpg`.
