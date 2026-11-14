@@ -40,11 +40,9 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 - Alle Levels sind von Beginn an frei wählbar. Besuche und ausdrücklich markierte Abschlüsse werden unabhängig gespeichert.
 - Stationsbesuche werden beim Öffnen gespeichert. Demos, Zusammenfassung und Wissenscheck bleiben verfügbar, sind aber keine Pflicht.
 - **Karte ansehen** schliesst das aktuelle Pop-up, ohne automatisch ein weiteres Pop-up zu öffnen. Es gibt keinen separaten Wegweiser mehr.
-- Erst wenn alle Stationen besucht wurden, startet nach dem Schliessen der Stationskarte die 15-sekündige freie Fahrzeit; danach wechselt die App automatisch und ohne sichtbaren Countdown zurück zum Planeten.
-- Tool River und MCP Harbor verwenden Docks. Boote bleiben innerhalb des Fahrwassers und erhalten exklusiv eine animierte Heckspur, zwei breite Wasserlinien, deutliches Bug-Spritzwasser sowie eine geschwindigkeitsabhängige Schwimmbewegung.
-- Nur Boote werden am Verlassen des Fahrwassers gehindert. Snowcat und andere Radfahrzeuge dürfen Strasse und Gelände befahren; fällt die Snowcat tief vom Pass, wird sie sicher auf die Passstrasse zurückgesetzt.
-- Landlevel besitzen schmalere Strassen und deutlich grössere Höhenunterschiede. Steigungen reduzieren Beschleunigung und Tempo, lose Flächen verringern die Lenkhaftung, und die Verfolgungskamera reagiert auf Geschwindigkeit sowie unruhiges Gelände.
-- Wald- und Schneegebiete haben dichtere Baumbestände. Fahrzeuge erzeugen je nach Umgebung Wasser-, Schnee-, Sand- oder Staubpartikel; Gelände, Grasstruktur, Hügel und eine Holz-Hängebrücke ergänzen die Routen.
+- Nach dem Schliessen der letzten Stationskarte bleiben 15 Sekunden zum freien Fahren; danach wechselt die App automatisch und ohne sichtbaren Countdown zurück zum Planeten.
+- Tool River und MCP Harbor verwenden Docks. Boote bleiben innerhalb des Fahrwassers und erzeugen eine animierte Wasser-Wake.
+- Fahrzeuge erzeugen je nach Umgebung Wasser-, Schnee-, Sand- oder Staubpartikel. Gelände, Grasstruktur, Hügel und eine Holz-Hängebrücke ergänzen die Routen.
 - Ein animierter Ladeübergang verbindet Planet und Level.
 
 ## Abschliessende Gesamtprüfung
@@ -54,7 +52,7 @@ Hafenboot, Container, Kräne und Verbindungsdemo für Host, Client, Server und e
 - Manuelle Fahrt im Browser: W beschleunigt das Fahrzeug, Anzeige zeigt MANUELL und Geschwindigkeit. Geführte Fahrt erreicht eine Parkbucht und öffnet nach dem Halt die richtige Station.
 - Der drehbare Planet, der animierte Levelwechsel, Verification Lab und Tool River wurden im Desktop-Browser geprüft. Frühere schmale Ansichten mit 390 × 844 und 320 × 800 bleiben durch die bestehenden Breakpoints abgedeckt.
 - Mobiles Stationsfenster mit Demo geprüft: kein horizontaler Überlauf, Inhalt vertikal scrollbar.
-- **23 automatisierte Tests bestanden** (`node --test`), einschliesslich sieben 3D-Umgebungen/Fahrzeugen, exklusiver Bootseffekte, steiler und schmaler Landstrassen, dichter Waldgebiete, Fahrwasserbegrenzung für Boote, Geländefahrt und Snowcat-Absturzbergung mit echter Cannon-Fahrphysik sowie fehlender 3D-Bibliothek.
+- **17 automatisierte Tests bestanden** (`node --test`), einschliesslich sieben 3D-Umgebungen/Fahrzeugen, echter Cannon-Fahrphysik mit ersetzter Grafikausgabe und fehlender 3D-Bibliothek.
 - JavaScript-Syntax aller eigenen Skripte geprüft. Keine Fehler in der Browserkonsole beim finalen Start von Verification Lab und Tool River; nur der bekannte Deprecation-Hinweis der lokal gebündelten Three.js-UMD-Datei erscheint.
 - SHA-256-Vergleich: alle vier Token-Transit-Quelldateien unverändert.
 - Bildschirmnachweise: `screenshots/world-map.jpg`, `screenshots/token-pass.jpg`, `screenshots/mobile-lesson.jpg`.
