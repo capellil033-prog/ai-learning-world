@@ -72,5 +72,5 @@ test('all seven levels can complete in any order and resume with optional learni
 });
 test('all scripts and styles are local and present for offline startup',()=>{
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');const scripts=[...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m=>m[1]),styles=[...html.matchAll(/<link[^>]+href="([^"]+)"/g)].map(m=>m[1]);for(const file of [...scripts,...styles]){assert.ok(!file.startsWith('http'));assert.ok(fs.existsSync(path.join(root,file.split('?')[0])),file);}
- assert.ok(!html.includes('lib/token-transit.js'));
+ assert.ok(!html.includes('lib/token-transit.js'));assert.ok(html.includes('id="sound-toggle"'));assert.ok(fs.readFileSync(path.join(root,'lib','level-view.js'),'utf8').includes('id="mission-panel-toggle"'));
 });
