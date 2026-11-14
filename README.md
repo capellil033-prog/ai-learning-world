@@ -33,9 +33,9 @@ Each level includes an introduction, learning stations, optional interactive dem
 ## Controls and progress
 
 - **AI planet:** drag to rotate the planet, use the mouse wheel to zoom, select any region, and click **Level erkunden**. Seven large, irregular biomes curve around the low-poly ocean and contain their own vegetation, terrain, waterways, buildings, and landmarks. A short animated transition prepares the level.
-- **Stations:** opening a station records it as visited. **Karte ansehen** closes the explanation without opening another pop-up. After the final station, the level remains freely drivable for 15 seconds before returning to the planet automatically; the countdown stays hidden.
+- **Stations:** opening a station records it as visited. **Karte ansehen** closes the explanation without opening another pop-up. Only after every station has been visited, the level remains freely drivable for 15 seconds before returning to the planet automatically; the countdown stays hidden.
 - **Demos:** every demo remains available for exploration, but no demo is required to continue or complete a level.
-- **Tour:** drive to the selected station and stop automatically. Parking in a marked bay for 0.65 seconds opens its explanation. Moving vehicles create water, snow, sand, or dust trails that match the environment.
+- **Tour:** drive to the selected station and stop automatically. Parking in a marked bay for 0.65 seconds opens its explanation. Boats show an exclusive animated wake, two water trails, bow spray, and visible wave motion. Only boats are kept inside the navigable channel; every wheeled vehicle may leave the road. Land routes use narrower, steeper roads, dense forest corridors, slope-sensitive speed, reduced off-road traction, and a more dynamic follow camera. The Snowcat can descend or fall from the pass and is safely returned to the pass road after a deep fall.
 - **W / ↑:** accelerate. **S / ↓:** brake and reverse. **A/D / ←/→:** steer. **Space:** stop. **P:** toggle cruise control. Manual input takes control.
 - **Touch:** hold the pedal and steering buttons. Drag to rotate the camera; use the mouse wheel or +/− to zoom. The map button toggles the overview.
 - **Zusammenfassung:** open the summary and optional quiz, or mark the level as completed directly. **Weltkarte:** return to the planet.
@@ -72,7 +72,7 @@ The progress model uses `visitedLevels`, `completedLevels`, `currentLevel`, and 
 
 With Node.js 18 or newer installed, run `node --test` in the project folder.
 
-The 17 automated tests cover the data model, free level selection, storage, optional demos, and Cannon vehicle physics. Scene tests replace graphics output while using the bundled geometry and physics libraries. Browser checks and screenshots are documented in [docs/phases.md](docs/phases.md).
+The 23 automated tests cover the data model, free level selection, storage, optional demos, boat-only water effects, steep roads, dense forests, terrain access, fall recovery, and Cannon vehicle physics. Scene tests replace graphics output while using the bundled geometry and physics libraries. Browser checks and screenshots are documented in [docs/phases.md](docs/phases.md).
 
 The complete seven-level journey, saved progress, driving, and desktop/mobile layouts were checked in the browser. Direct file startup could not be tested because the test browser only allows HTTP/HTTPS. Physical touch devices, other browser engines, and different graphics drivers have not been tested.
 
