@@ -17,15 +17,6 @@ Ein Pull Request wird nicht automatisch gemergt. Das Mergen nach `main` erfolgt 
 
 ## Änderungsprotokoll
 
-### 2026-11-14 – Game-UI und Umgebungsgeräusche
-
-- Branch: `codex/game-ui-sounds`
-- Commit: `0f4189c`
-- Pull Request: [#9 – Redesign game UI and add procedural sounds](https://github.com/capellil033-prog/ai-learning-world/pull/9)
-- Prüfung: Syntaxprüfung der Frontend-Skripte und `node --test` mit 24/24 bestandenen Tests
-- Inhalt: dunkles Mission-Control-Menü, kompakteres Level-HUD, einklappbares Roadbook, responsive Spielsteuerung sowie prozedurale Weltraum-, Motor-, Strassen-, Gelände- und Wassergeräusche
-- Einschränkung: Chrome erzeugte in dieser Sitzung keinen Headless-Screenshot; deshalb wurde keine visuelle Browserprüfung als bestanden dokumentiert
-
 ### 2026-11-14 – Anspruchsvollere Expeditionen
 
 - Branch: `feature/world-map`

@@ -8,23 +8,6 @@ catch { progress = WorldProgress.normalize(levels); }
 let selectedLevel = progress.currentLevel;
 let activeLevel, expedition, learningEvents, stationIndex = 0, loadingLevel = false, levelReturnTimer;
 const LEVEL_RETURN_DELAY = 15000;
-function syncSoundButton() {
-  const button = $('sound-toggle');
-  if (!button || !window.GameAudio) return;
-  const sound = window.GameAudio.getState(), active = sound.enabled && sound.unlocked;
-  button.setAttribute('aria-pressed', String(active));
-  button.title = active ? 'Sound ausschalten' : sound.enabled ? 'Sound starten' : 'Sound einschalten';
-  button.innerHTML = `<i data-lucide="${active ? 'volume-2' : 'volume-x'}"></i><span>${active ? 'Sound an' : sound.enabled ? 'Sound starten' : 'Sound aus'}</span>`;
-  icons();
-}
-async function toggleSound() {
-  const sound = window.GameAudio.getState();
-  if (!sound.unlocked) {
-    window.GameAudio.setEnabled(true);
-    await window.GameAudio.unlock();
-  } else window.GameAudio.setEnabled(!sound.enabled);
-  syncSoundButton();
-}
 function saveProgress() {
   try { localStorage.setItem(AIWorld.storageKey, JSON.stringify(progress)); }
   catch { $('storage-note').hidden = false; $('storage-note').textContent = 'Speichern ist blockiert. Dein Fortschritt bleibt für diese Sitzung erhalten.'; }
@@ -44,15 +27,12 @@ function selectLevel(id) { selectedLevel = id; renderWorld(); }
 function renderWorld() {
   $('level-count').textContent = `${levels.length} LEVELS`;
   $('world-progress').textContent = `${progress.visitedLevels.length} / ${levels.length} Levels besucht · ${progress.completedLevels.length} abgeschlossen`;
-  $('header-mode').textContent = 'ORBIT';
-  $('header-progress').textContent = `${progress.completedLevels.length} / ${levels.length}`;
   $('level-list').innerHTML = levels.map(l => {
     const done = progress.completedLevels.includes(l.id), visited = progress.visitedLevels.includes(l.id);
     return `<button class="level-card${selectedLevel === l.id ? ' selected' : ''}${visited ? ' visited' : ''}" data-level="${l.id}" aria-pressed="${selectedLevel === l.id}"><span class="station-number">${done ? '✓' : String(l.number).padStart(2,'0')}</span><span class="station-copy"><strong>${l.title}</strong><small>${done ? 'Abgeschlossen' : visited ? 'Besucht' : 'Frei verfügbar'} · ${l.topic}</small></span><i data-lucide="${done ? 'circle-check' : visited ? 'footprints' : 'arrow-up-right'}"></i></button>`;
   }).join('');
   const level = levels.find(l => l.id === selectedLevel) || levels[0];
-  const done = progress.completedLevels.includes(level.id), visited = progress.visitedLevels.includes(level.id);
-  $('level-preview').innerHTML = `<span class="mission-preview-icon"><i data-lucide="${level.icon}"></i></span><div class="preview-copy"><span class="eyebrow">MISSION ${String(level.number).padStart(2,'0')} / ${done ? 'ABGESCHLOSSEN' : visited ? 'FORTSETZEN' : 'BEREIT'}</span><h2>${level.title}</h2><p>${level.intro}</p><div class="preview-meta"><span><i data-lucide="scan-line"></i>${level.topic}</span><span><i data-lucide="navigation"></i>${level.vehicleName}</span></div></div><button class="primary mission-start" id="enter-level"><span>Mission starten</span><i data-lucide="play"></i></button>`;
+  $('level-preview').innerHTML = `<div class="preview-copy"><span class="eyebrow">LEVEL ${String(level.number).padStart(2,'0')} / FREI WÄHLBAR</span><h2>${level.title}</h2><p>${level.intro}</p><div class="preview-meta"><span><i data-lucide="${level.icon}"></i>${level.topic}</span><span><i data-lucide="truck"></i>${level.vehicleName}</span></div></div><button class="primary" id="enter-level"><i data-lucide="arrow-right"></i>Level erkunden</button>`;
   $('enter-level').addEventListener('click', () => enterLevel(level.id));
   WorldAtlas.render(levels, progress, selectedLevel, selectLevel);
   icons();
@@ -70,15 +50,10 @@ async function enterLevel(id) {
   try {
     expedition?.destroy(); learningEvents?.abort();
     learningEvents = new AbortController(); activeLevel = level; stationIndex = 0;
-    window.GameAudio?.setScene(['river','harbor'].includes(level.environment) ? 'water' : 'road');
-    window.GameAudio?.setMotion({speed:0,surface:'road',boat:['boat','harborboat'].includes(level.vehicle)});
     progress.currentLevel = id;
     if(!progress.visitedLevels.includes(id))progress.visitedLevels.push(id);
     saveProgress(); WorldAtlas.destroy();
     $('world-view').hidden = true; $('level-view').hidden = false;
-    document.body.classList.add('in-level');
-    $('world-button').hidden = false;
-    $('header-mode').textContent = `MISSION ${String(level.number).padStart(2,'0')}`;
     $('help-button').hidden = false;
     $('level-view').innerHTML = levelShell;
     $('level-heading').textContent = level.title;
@@ -94,12 +69,6 @@ async function enterLevel(id) {
     on('summary-button','click',openCheckpoint);
     on('help-button','click',()=>{expedition?.pause();$('help-dialog').showModal();});
     on('close-help','click',()=>$('help-dialog').close());
-    on('mission-panel-toggle','click',()=>{
-      const workspace=$('mission-workspace'),button=$('mission-panel-toggle'),collapsed=workspace.classList.toggle('menu-collapsed');
-      button.setAttribute('aria-expanded',String(!collapsed));
-      button.innerHTML=`<i data-lucide="${collapsed?'panel-left-open':'panel-left-close'}"></i><span>${collapsed?'Roadbook':'Missionen'}</span>`;
-      icons();
-    });
     $('station-dialog').addEventListener('close',()=>{
       expedition?.pause();
       if(WorldProgress.hasVisitedAllStations(activeLevel,progress))scheduleLevelReturn();
@@ -107,7 +76,7 @@ async function enterLevel(id) {
     $('checkpoint-dialog').addEventListener('close',()=>expedition?.pause(),{signal:learningEvents.signal});
     expedition=createExpedition({level,visited:progress.visitedStations[id],onTarget:index=>{stationIndex=index;renderStationList();},onStation:(index,arrived)=>openStation(index,arrived)});
     $('route-count').textContent=`${level.stations.length} STATIONEN`;
-    $('intro-dialog').innerHTML=`<span class="eyebrow">MISSION ${String(level.number).padStart(2,'0')} / ${level.vehicleName.toUpperCase()}</span><h2 id="intro-heading">${level.title}</h2><p>${level.intro}</p><h3>Missionsziele</h3><ul class="checklist">${level.objectives.map(t=>`<li>${t}</li>`).join('')}</ul><p>Die Stationsreihenfolge ist frei. Demos und Wissenscheck sind optional; dein Fortschritt wird automatisch gespeichert.</p><button class="primary" id="start-learning">Mission beginnen <i data-lucide="play"></i></button>`;
+    $('intro-dialog').innerHTML=`<span class="eyebrow">LEVEL ${level.number} / ${level.vehicleName.toUpperCase()}</span><h2 id="intro-heading">Willkommen in ${level.title}.</h2><p>${level.intro}</p><h3>Das lernst du</h3><ul class="checklist">${level.objectives.map(t=>`<li>${t}</li>`).join('')}</ul><p>Öffne die Stationen in deiner Reihenfolge. Demos und Wissenscheck sind freiwillig; dein Besuchsfortschritt wird automatisch gespeichert.</p><button class="primary" id="start-learning">Reise beginnen <i data-lucide="arrow-right"></i></button>`;
     $('start-learning').addEventListener('click',()=>$('intro-dialog').close());
     $('intro-dialog').showModal();
     window.scrollTo(0,0);icons();
@@ -119,9 +88,7 @@ async function enterLevel(id) {
 }
 function renderStationList(){
   if(!activeLevel)return;
-  const visitedCount=progress.visitedStations[activeLevel.id].length;
-  $('header-progress').textContent=`${visitedCount} / ${activeLevel.stations.length}`;
-  $('station-list').innerHTML=activeLevel.stations.map((s,i)=>{const visited=progress.visitedStations[activeLevel.id].includes(s.id);return `<button class="station-button${i===stationIndex?' active':''}${visited?' visited':''}" data-index="${i}" ${i===stationIndex?'aria-current="step"':''}><span class="station-number">${visited?'✓':String(i+1).padStart(2,'0')}</span><span class="station-copy"><span class="station-name">${s.name}</span><span class="station-subtitle">${s.subtitle}</span></span><i class="station-arrow" data-lucide="chevron-right"></i></button>`;}).join('');
+  $('station-list').innerHTML=activeLevel.stations.map((s,i)=>{const visited=progress.visitedStations[activeLevel.id].includes(s.id);return `<button class="station-button${i===stationIndex?' active':''}${visited?' visited':''}" data-index="${i}" ${i===stationIndex?'aria-current="step"':''}><span class="station-number">${visited?'✓':String(i+1).padStart(2,'0')}</span><span class="station-copy"><span class="station-name">${s.name}</span><span class="station-subtitle">${s.subtitle}</span></span><i class="station-arrow" data-lucide="arrow-up-right"></i></button>`;}).join('');
   icons();
 }
 function openStation(index,arrived=false){
@@ -153,16 +120,10 @@ function updateCompletion(){
 }
 function showWorld(){
   clearLevelReturnTimer();activeLevel=null;document.querySelectorAll('dialog[open]').forEach(d=>d.close());expedition?.destroy();expedition=null;learningEvents?.abort();
-  window.GameAudio?.setMotion({speed:0,surface:'road',boat:false});window.GameAudio?.setScene('space');
-  document.body.classList.remove('in-level');$('world-button').hidden=true;
   $('world-view').hidden=false;$('level-view').hidden=true;$('level-view').innerHTML='';selectedLevel=progress.currentLevel;renderWorld();window.scrollTo(0,0);
   $('help-button').hidden=true;
 }
 $('level-list').addEventListener('click', e => { const button = e.target.closest('[data-level]'); if (button) selectLevel(button.dataset.level); });
 $('world-button').addEventListener('click', showWorld);
-$('sound-toggle').addEventListener('click',toggleSound);
-document.addEventListener('pointerdown',event=>{if(window.GameAudio?.getState().enabled&&!event.target.closest?.('#sound-toggle'))window.GameAudio.unlock().then(syncSoundButton);},{once:true,capture:true});
-document.addEventListener('keydown',()=>{if(window.GameAudio?.getState().enabled)window.GameAudio.unlock().then(syncSoundButton);},{once:true,capture:true});
 document.querySelector('.brand').addEventListener('click',e=>{e.preventDefault();showWorld();});
-window.GameAudio?.setScene('space');syncSoundButton();
 renderWorld();
