@@ -19,9 +19,9 @@ function visibleBounds(THREE,object){
  object.traverse(child=>{if(!child.visible||!child.geometry)return;child.geometry.computeBoundingBox();bounds.union(child.geometry.boundingBox.clone().applyMatrix4(child.matrixWorld));});
  return bounds;
 }
-function intersectsGround(THREE,object){
+function intersectsHeight(THREE,object,height){
  object.updateMatrixWorld(true);let intersects=false;
- object.traverse(child=>{if(!child.visible||!child.geometry)return;child.geometry.computeBoundingBox();const bounds=child.geometry.boundingBox.clone().applyMatrix4(child.matrixWorld);if(bounds.min.y<=.025&&bounds.max.y>=-.025)intersects=true;});
+ object.traverse(child=>{if(!child.visible||!child.geometry)return;child.geometry.computeBoundingBox();const bounds=child.geometry.boundingBox.clone().applyMatrix4(child.matrixWorld);if(bounds.min.y<=height+.025&&bounds.max.y>=height-.025)intersects=true;});
  return intersects;
 }
 test('all seven environments construct with moving water, snow, sand or dust trails',()=>{
@@ -33,17 +33,25 @@ test('all seven environments construct with moving water, snow, sand or dust tra
   h.key('keydown','KeyW');h.tick(50);assert.ok(trails[0].material.opacity>0,`${level.id} moving trail`);h.key('keyup','KeyW');engine.destroy();
  }
 });
-test('all seven levels use flat terrain and keep stations and vehicles grounded',()=>{
+test('Token Pass keeps its steep road and slope while every level keeps 3D models grounded',()=>{
  const h=harness();for(const level of h.context.AIWorld.levels){
-  const engine=h.context.createExpedition({level,visited:[]});h.tick(2);const terrains=[],buildings=[];let vehicle;
-  h.scene().traverse(object=>{if(object.userData?.effect==='terrain')terrains.push(object);if(object.userData?.effect==='station-building')buildings.push(object);if(object.userData?.effect==='vehicle')vehicle=object;});
+  const engine=h.context.createExpedition({level,visited:[]});h.tick(2);const terrains=[],roads=[],buildings=[];let vehicle;
+  h.scene().traverse(object=>{if(object.userData?.effect==='terrain')terrains.push(object);if(object.userData?.effect==='road-surface')roads.push(object);if(object.userData?.effect==='station-building')buildings.push(object);if(object.userData?.effect==='vehicle')vehicle=object;});
   assert.equal(terrains.length,1,`${level.id} terrain`);
-  for(const terrain of terrains){const y=terrain.geometry.attributes.position;for(let index=0;index<y.count;index++)assert.ok(Math.abs(y.getY(index))<1e-9,`${level.id} terrain vertex ${index}`);}
+  const terrainY=terrains[0].geometry.attributes.position,terrainHeights=[];for(let index=0;index<terrainY.count;index++)terrainHeights.push(terrainY.getY(index));
+  const roadRanges=roads.map(road=>{const y=road.geometry.attributes.position,values=[];for(let index=0;index<y.count;index++)values.push(y.getY(index));return Math.max(...values)-Math.min(...values);});
+  if(level.environment==='snow'){
+   assert.ok(roadRanges.every(range=>range>20),`${level.id} steep road`);
+   assert.ok(Math.max(...terrainHeights)-Math.min(...terrainHeights)>50,`${level.id} steep roadside slope`);
+  }else{
+   assert.ok(terrainHeights.every(height=>Math.abs(height)<1e-9),`${level.id} flat terrain`);
+   assert.ok(roadRanges.every(range=>range<1e-9),`${level.id} flat road`);
+  }
   assert.equal(buildings.length,level.stations.length,`${level.id} station buildings`);
-  for(const building of buildings)assert.ok(intersectsGround(h.context.THREE,building),`${level.id} ${building.userData.station} ground contact`);
+  for(const building of buildings)assert.ok(intersectsHeight(h.context.THREE,building,building.userData.groundHeight),`${level.id} ${building.userData.station} ground contact`);
   const vehicleBounds=visibleBounds(h.context.THREE,vehicle);
   if(['river','harbor'].includes(level.environment)){assert.ok(vehicleBounds.min.y<0&&vehicleBounds.max.y>0,`${level.id} hull crosses waterline`);}
-  else assert.ok(Math.abs(vehicleBounds.min.y-.025)<1e-6,`${level.id} vehicle base ${vehicleBounds.min.y}`);
+  else assert.ok(Math.abs(vehicle.position.y-vehicle.userData.surfaceHeight-vehicle.userData.groundOffset)<1e-9,`${level.id} vehicle ground offset`);
   engine.destroy();
  }
 });
